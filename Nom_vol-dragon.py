@@ -31,18 +31,18 @@ objectiveY = 0
 obj = [objectiveX,objectiveY]
 goingToObjective = False
 
-dragonGauche=[]  # Liste des 8 images du dragon se déplaçant vers la gauche.
-dragonGaucheHaut=[]
-dragonGaucheBas=[]
+dragonLeft=[]  # Liste des 8 images du dragon se déplaçant vers la gauche.
+dragonLeftUp=[]
+dragonLeftDown=[]
 
-dragonDroite=[]
-dragonDroiteHaut=[]
-dragonDroiteBas=[]
+dragonRight=[]
+dragonRightUp=[]
+dragonRightDown=[]
 
-dragonBas=[]
-dragonHaut=[]
+dragonDown=[]
+dragonUp=[]
 
-directions=[dragonGauche,dragonGaucheHaut,dragonGaucheBas,dragonDroite,dragonDroiteHaut,dragonDroiteBas,dragonBas,dragonHaut]
+directions=[dragonLeft,dragonLeftUp,dragonLeftDown,dragonRight,dragonRightUp,dragonRightDown,dragonDown,dragonUp]
 
 pygame.init() #Initialisation de la bibliothèque Pygame
 clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
@@ -55,59 +55,59 @@ im = Image.open("data\wyvern_vol.png")  #On ouvre l'image
 for i in range (8): #Pour une ligne d'images en entier
     box = (256*i,0,256*(i+1), 256 ) #On découpe un boite autour
     image=im.crop(box) # crée l'image découpée.
-    image.save("data\dragonseul.png", "PNG") #On sauvegarde l'image créée
-    dragonseul = pygame.image.load("data\dragonseul.png")  #On la charge
-    dragonGauche.append(dragonseul) #On l'ajoute dans la liste
+    image.save("data\dragonAlone.png", "PNG") #On sauvegarde l'image créée
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  #On la charge
+    dragonLeft.append(dragonAlone) #On l'ajoute dans la liste
 
 for i in range (8): 
     box = (256*i,4*256,256*(i+1), 5*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonDroite.append(dragonseul) 
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonRight.append(dragonAlone) 
 
 for i in range (8): 
     box = (256*i,2*256,256*(i+1), 3*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonHaut.append(dragonseul) 
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonUp.append(dragonAlone) 
 
 for i in range (8): 
     box = (256*i,6*256,256*(i+1), 7*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonBas.append(dragonseul) 
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonDown.append(dragonAlone) 
 
 for i in range (8): 
     box = (256*i,1*256,256*(i+1), 2*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonGaucheHaut.append(dragonseul)
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonLeftUp.append(dragonAlone)
 
 for i in range (8): 
     box = (256*i,3*256,256*(i+1), 4*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonDroiteHaut.append(dragonseul)
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonRightUp.append(dragonAlone)
 
 for i in range (8): 
     box = (256*i,5*256,256*(i+1), 6*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonDroiteBas.append(dragonseul)
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonRightDown.append(dragonAlone)
 
 
 for i in range (8): 
     box = (256*i,7*256,256*(i+1), 8*256 ) 
     image=im.crop(box) 
-    image.save("data\dragonseul.png", "PNG") 
-    dragonseul = pygame.image.load("data\dragonseul.png")  
-    dragonGaucheBas.append(dragonseul)
+    image.save("data\dragonAlone.png", "PNG") 
+    dragonAlone = pygame.image.load("data\dragonAlone.png")  
+    dragonLeftDown.append(dragonAlone)
 
 
 
@@ -117,48 +117,48 @@ for i in range (8):
 
 
 
-dragon=dragonGauche[2] # Initialise la première image du dragon
-def deplacementGauche():  # Fonction pour déplacer le dragon vers la gauche
+dragon=dragonLeft[2] # Initialise la première image du dragon
+def movingLeft():  # Fonction pour déplacer le dragon vers la gauche
     global x, dragon,j
     x=x-10
     
 
 
 
-def deplacementDroite():  
+def movingRight():  
     global x, dragon,j
     x=x+10
     
 
-def deplacementHaut():
+def movingUp():
     global y, dragon,j
     y=y-10
     
 
-def deplacementBas():  
+def movingDown():  
     global y, dragon,j
     y=y+10
     
 
-def deplacementGaucheHaut():  
+def movingLeftUp():  
     global y, x, dragon,j
     y=y-10
     x-=10
     
 
-def deplacementDroiteHaut():  
+def movingRightUp():  
     global y, x, dragon,j
     y=y-10
     x+=10
     
 
-def deplacementDroiteBas():  
+def movingRightDown():  
     global y, x, dragon,j
     y=y+10
     x+=10
     
 
-def deplacementGaucheBas():  
+def movingLeftDown():  
     global y, x, dragon,j
     y=y+10
     x-=10
@@ -174,11 +174,7 @@ while continuer:
     if clockAutoMovement == 2:
         clockAutoMovement =0
     
-    obj = [objectiveX,objectiveY]
-    while obj[0]%10 != 0:
-        obj[0] +=1
-    while obj[1]%10 != 0:
-        obj[1] +=1
+    
         
     mouseX, mouseY =  pygame.mouse.get_pos()
     
@@ -195,33 +191,33 @@ while continuer:
             continuer = False      
         if event.type == KEYDOWN :  # Si touche appuyée
             if event.key == K_KP1: # Si touche clavier numérique 1
-                deplacementGaucheBas()
+                movingLeftDown()
                 directionFacing = 2
             elif event.key == K_KP2: # Si touche clavier numérique 2
-                deplacementBas()
+                movingDown()
                 directionFacing = 6
             elif event.key == K_KP3: # Si touche clavier numérique 3
-                deplacementDroiteBas()
+                movingRightDown()
                 directionFacing = 5
             elif event.key == K_KP4: # Si touche clavier numérique 4
-                deplacementGauche()
+                movingLeft()
                 directionFacing= 0
             elif event.key == K_KP6: # Si touche clavier numérique 6
-                deplacementDroite()
+                movingRight()
                 directionFacing= 3
             elif event.key == K_KP7: # Si touche clavier numérique 7
-                deplacementGaucheHaut()
+                movingLeftUp()
                 directionFacing = 1
             elif event.key == K_KP8: # Si touche clavier numérique 8
-                deplacementHaut()
+                movingUp()
                 directionFacing = 7
             elif event.key == K_KP9: # Si touche clavier numérique 9
-                deplacementDroiteHaut()
+                movingRightUp()
                 directionFacing = 4
             elif event.key == K_KP5:
                 if goingToObjective == True:
                     print("Stopped automatic movement by pressing numPad5")
-                goingToObjective = False
+                    goingToObjective = False
             
             elif event.key == K_c:
                 print("Dragon coordinates =", coords)
@@ -239,37 +235,43 @@ while continuer:
             print("dragonX =", x)
             print("dragonY =", y)
     
-    if goingToObjective == True and coords == obj:
-        goingToObjective = False
-        print("Reached destination and stopped")
+    obj = [objectiveX,objectiveY]
+    while obj[0]%10 != 0:
+        obj[0] +=1
+    while obj[1]%10 != 0:
+        obj[1] +=1
               
     if goingToObjective == True and clockAutoMovement == 0:
         if coords[0] < obj[0] and coords[1] < obj[1]:
-            deplacementDroiteBas()
+            movingRightDown()
             directionFacing = 5
         elif coords[0] > obj[0] and coords[1] > obj[1]:
-            deplacementGaucheHaut()
+            movingLeftUp()
             directionFacing = 1
         elif coords[0] > obj[0] and coords[1] < obj[1]:
-            deplacementGaucheBas()
+            movingLeftDown()
             directionFacing = 2
         elif coords[0] < obj[0] and coords[1] > obj[1]:
-            deplacementDroiteHaut()
+            movingRightUp()
             directionFacing = 4 
         else:
             if coords[0] < obj[0] and coords[1] == obj[1]:
-                deplacementDroite()
+                movingRight()
                 directionFacing = 3
             elif coords[0] > obj[0] and coords[1] == obj[1]:
-                deplacementGauche()
+                movingLeft()
                 directionFacing = 0
             elif coords[0] == obj[0] and coords[1] > obj[1]:
-                deplacementHaut()
+                movingUp()
                 directionFacing = 7
             elif coords[0] == obj[0] and coords[1] < obj[1]:
-                deplacementBas()
+                movingDown()
                 directionFacing = 6
-                
+    if goingToObjective == True and coords == obj:
+        goingToObjective = False
+        print("Reached destination and stopped")              
+    
+    
     
     fenetre.fill(colorWhite) # efface l'image    
     fenetre.blit(dragon, (x,y))  #collage de l'image sur la fenêtre
