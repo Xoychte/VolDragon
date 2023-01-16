@@ -1,11 +1,3 @@
-"""
-
-
-Bonus1: Lancer une boule de feu si on appui sur la touche espace
-Bonus2: Modifier le programme pour que le dragon se déplace et rejoigne le clic de la souris en calculant l'angle et distance entre dragon et souris
-Ressources: Fonctions sur https://www.pygame.org/docs/
-https://riptutorial.com/fr/pygame/topic/3959/commencer-avec-pygame
-"""
 #Importation des bibliothèques nécessaires
 import pygame
 from pygame.locals import *
@@ -16,15 +8,20 @@ from PIL import Image  #
 (largeur, hauteur) = (1000, 800)  # definit la hauteur et la largeur de la fenêtre de l'application
 colorWhite=(255,255,255)   #On définit la couleur blanche
 colorRed=(255,0,0)   #On définit la couleur rouge
-x=402
-y=302
+dragonX=402
+dragonY=302
 FPS = 60
 score=0
 j=0
 directionFacing = 0
 i = 0
 clockAutoMovement = 0
-coords = [x+ 256/2,y +256/2]
+coords = [dragonX+ 256/2,dragonY +256/2]
+
+fireballX = -100
+fireballY = -100
+fireballRun = False
+fireballCounter = 0
 
 objectiveX = 0
 objectiveY = 0
@@ -44,13 +41,15 @@ dragonUp=[]
 
 directions=[dragonLeft,dragonLeftUp,dragonLeftDown,dragonRight,dragonRightUp,dragonRightDown,dragonDown,dragonUp]
 
+fireballAnim=[]
+
 pygame.init() #Initialisation de la bibliothèque Pygame
 clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
 pygame.key.set_repeat(1, 60) # Si touche appuyée plus de 400ms répétition de 30ms
 fenetre = pygame.display.set_mode((largeur, hauteur), RESIZABLE) #Création de la fenêtre redimensionnable
 font_obj = pygame.font.Font('freesansbold.ttf', 18)  #On charge la police
 im = Image.open("data\wyvern_vol.png")  #On ouvre l'image
-
+im2 = Image.open("data\explosion.png")
 # Découpage des 8 premières images du fichier wyvern_vol.png et les mettre dans la liste dragongauche
 for i in range (8): #Pour une ligne d'images en entier
     box = (256*i,0,256*(i+1), 256 ) #On découpe un boite autour
@@ -109,66 +108,68 @@ for i in range (8):
     dragonAlone = pygame.image.load("data\dragonAlone.png")  
     dragonLeftDown.append(dragonAlone)
 
+for n in range(5):
+    for i in range (8): 
+        box = (128*i,n*128,128*(i+1), n*128+128 ) 
+        image=im2.crop(box) 
+        image.save("data\\fireballAlone.png", "PNG") 
+        fireballAlone = pygame.image.load("data\\fireballAlone.png")  
+        fireballAnim.append(fireballAlone)
 
 
 
 
 
-
-
-
+fireball = fireballAnim[0]
 dragon=dragonLeft[2] # Initialise la première image du dragon
 def movingLeft():  # Fonction pour déplacer le dragon vers la gauche
-    global x, dragon,j
-    x=x-10
+    global dragonX, dragon,j
+    dragonX=dragonX-10
     
-
-
-
 def movingRight():  
-    global x, dragon,j
-    x=x+10
+    global dragonX, dragon,j
+    dragonX=dragonX+10
     
 
 def movingUp():
-    global y, dragon,j
-    y=y-10
+    global dragonY, dragon,j
+    dragonY=dragonY-10
     
 
 def movingDown():  
-    global y, dragon,j
-    y=y+10
+    global dragonY, dragon,j
+    dragonY=dragonY+10
     
 
 def movingLeftUp():  
-    global y, x, dragon,j
-    y=y-10
-    x-=10
+    global dragonY, dragonX, dragon,j
+    dragonY=dragonY-5
+    dragonX-=5
     
 
 def movingRightUp():  
-    global y, x, dragon,j
-    y=y-10
-    x+=10
+    global dragonY, dragonX, dragon,j
+    dragonY=dragonY-5
+    dragonX+=5
     
 
 def movingRightDown():  
-    global y, x, dragon,j
-    y=y+10
-    x+=10
+    global dragonY, dragonX, dragon,j
+    dragonY=dragonY+5
+    dragonX+=5
     
 
 def movingLeftDown():  
-    global y, x, dragon,j
-    y=y+10
-    x-=10
+    global dragonY, dragonX, dragon,j
+    dragonY=dragonY+5
+    dragonX-=5
     
 
 #BOUCLE INFINIE
 continuer = True
 while continuer:
     clock.tick(FPS)#Précise le nombre d'image par seconde Frame par seconde
-    coords = [x+ 256/2,y+ 256/2]
+    coords = [dragonX+ 256/2,dragonY+ 256/2]
     
     clockAutoMovement +=1
     if clockAutoMovement == 2:
@@ -190,28 +191,28 @@ while continuer:
         if event.type == QUIT:     #Si un de ces événements est de type QUIT (Alt+F4) ou bouton fermeture
             continuer = False      
         if event.type == KEYDOWN :  # Si touche appuyée
-            if event.key == K_KP1: # Si touche clavier numérique 1
+            if event.key == K_KP1 and goingToObjective == False: # Si touche clavier numérique 1
                 movingLeftDown()
                 directionFacing = 2
-            elif event.key == K_KP2: # Si touche clavier numérique 2
+            elif event.key == K_KP2 and goingToObjective == False: # Si touche clavier numérique 2
                 movingDown()
                 directionFacing = 6
-            elif event.key == K_KP3: # Si touche clavier numérique 3
+            elif event.key == K_KP3 and goingToObjective == False: # Si touche clavier numérique 3
                 movingRightDown()
                 directionFacing = 5
-            elif event.key == K_KP4: # Si touche clavier numérique 4
+            elif event.key == K_KP4 and goingToObjective == False: # Si touche clavier numérique 4
                 movingLeft()
                 directionFacing= 0
-            elif event.key == K_KP6: # Si touche clavier numérique 6
+            elif event.key == K_KP6 and goingToObjective == False: # Si touche clavier numérique 6
                 movingRight()
                 directionFacing= 3
-            elif event.key == K_KP7: # Si touche clavier numérique 7
+            elif event.key == K_KP7 and goingToObjective == False: # Si touche clavier numérique 7
                 movingLeftUp()
                 directionFacing = 1
-            elif event.key == K_KP8: # Si touche clavier numérique 8
+            elif event.key == K_KP8 and goingToObjective == False: # Si touche clavier numérique 8
                 movingUp()
                 directionFacing = 7
-            elif event.key == K_KP9: # Si touche clavier numérique 9
+            elif event.key == K_KP9 and goingToObjective == False: # Si touche clavier numérique 9
                 movingRightUp()
                 directionFacing = 4
             elif event.key == K_KP5:
@@ -223,17 +224,25 @@ while continuer:
                 print("Dragon coordinates =", coords)
             elif event.key == K_o:
                 print("Objective coordinates =", obj)
+            elif event.key == K_SPACE and fireballRun == False:
+                print("Launching fireball")
+                fireballX = dragonX+64
+                fireballY = dragonY+64
+                fireballDirection = directionFacing
+                fireballRun = True
+                
+
 
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("MouseX =",mouseX)
             print("MouseY =",mouseY)
-            if goingToObjective == False:
+            if goingToObjective == False and fireballRun == False :
                 objectiveX = mouseX
                 objectiveY = mouseY
                 goingToObjective = True
-            print("dragonX =", x)
-            print("dragonY =", y)
+            print("dragonX =", dragonX)
+            print("dragonY =", dragonY)
     
     obj = [objectiveX,objectiveY]
     while obj[0]%10 != 0:
@@ -271,10 +280,40 @@ while continuer:
         goingToObjective = False
         print("Reached destination and stopped")              
     
+    if fireballRun == True and clockAutoMovement == 0 and goingToObjective == False:
+        fireballCounter += 1
+        fireball= fireballAnim[fireballCounter]
+        if fireballDirection == 6:
+            fireballY+=15
+        elif fireballDirection == 7:
+            fireballY-=15
+        elif fireballDirection == 0:
+            fireballX-=15
+        elif fireballDirection == 3:
+            fireballX+=15
+        
+        elif fireballDirection == 1:
+            fireballY-=10
+            fireballX-=10
+        elif fireballDirection == 2:
+            fireballY+=10
+            fireballX-=10
+        elif fireballDirection == 4:
+            fireballY-=10
+            fireballX+=10          
+        elif fireballDirection == 5:
+            fireballY+=10
+            fireballX+=10
+           
+        if fireballCounter == 39:
+            fireballCounter = 0
+            fireballRun = False
+        
     
     
     fenetre.fill(colorWhite) # efface l'image    
-    fenetre.blit(dragon, (x,y))  #collage de l'image sur la fenêtre
+    fenetre.blit(dragon, (dragonX,dragonY))  #collage de l'image sur la fenêtre
+    fenetre.blit(fireball,(fireballX,fireballY))
     pygame.display.flip()  #Rafraîchissement de l'écran
 
 
